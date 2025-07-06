@@ -1,0 +1,30 @@
+name: Deploy to Firebase Hosting on Pull Request
+
+on: pull_request
+
+jobs:
+  build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Si tu aplicación no tiene un proceso de "build", puedes dejar comentadas estas líneas.
+      # Si usas un framework como React/Vue/Angular, DESCOMENTA y ajusta:
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18' # O la versión de Node.js que uses
+      # - name: Install dependencies
+      #   run: npm install
+      # - name: Build project
+      #   run: npm run build # O el comando de build de tu proyecto
+
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROPUESTA_ELSAPO_HOYO }}'
+          projectId: propuesta-elsapo-hoyo
+          # Si tu directorio público no es la raíz (.), especifícalo aquí:
+          # publicDirectory: ./

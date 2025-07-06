@@ -4,6 +4,7 @@ on: pull_request
 
 jobs:
   build_and_preview:
+    # Solo ejecuta si el PR es del mismo repositorio (evita ejecutarlo en forks externos)
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +27,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROPUESTA_ELSAPO_HOYO }}'
           projectId: propuesta-elsapo-hoyo
-          # Si tu directorio público no es la raíz (.), especifícalo aquí:
-          # publicDirectory: ./
+          # Esto crea una URL temporal para cada PR
+          publicDirectory: ./ # Asegúrate de que esté descomentado si tu directorio público es la raíz

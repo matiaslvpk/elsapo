@@ -1,31 +1,35 @@
-name: Deploy to Firebase Hosting on Pull Request
+name: Deploy to Firebase Hosting on main branch
 
-on: pull_request
+on:
+  push:
+    branches:
+      - main # O el nombre de tu rama principal si es diferente (ej. master)
 
 jobs:
-  build_and_preview:
-    # Solo ejecuta si el PR es del mismo repositorio (evita ejecutarlo en forks externos)
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Si tu aplicación no tiene un proceso de "build", puedes dejar comentadas estas líneas.
-      # Si usas un framework como React/Vue/Angular, DESCOMENTA y ajusta:
+      # Si tu aplicación no tiene un proceso de "build" (es solo HTML/CSS/JS estático),
+      # puedes dejar comentadas o eliminar las siguientes 3 líneas.
+      # Si usas un framework como React/Vue/Angular, DESCOMENTA y ajusta estas líneas:
       # - name: Setup Node.js
       #   uses: actions/setup-node@v4
       #   with:
-      #     node-version: '18' # O la versión de Node.js que uses
+      #     node-version: '18' # O la versión de Node.js que uses en tu proyecto
       # - name: Install dependencies
       #   run: npm install
       # - name: Build project
-      #   run: npm run build # O el comando de build de tu proyecto
+      #   run: npm run build # O el comando de build de tu proyecto (ej. npm run build, yarn build)
 
-      - name: Deploy to Firebase Preview Channel
+      - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # Asegúrate de que el nombre del secret aquí coincida EXACTAMENTE con el que pusiste en GitHub Secrets
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROPUESTA_ELSAPO_HOYO }}'
           projectId: propuesta-elsapo-hoyo
-          # Esto crea una URL temporal para cada PR
-          publicDirectory: ./ # Asegúrate de que esté descomentado si tu directorio público es la raíz
+          channelId: live # Despliega directamente a tu sitio "en vivo" (producción)
+          # Cambiado de publicDirectory a entryPoint
+          entryPoint: ./ # Usa './' si tu directorio público es la raíz del repositorio
